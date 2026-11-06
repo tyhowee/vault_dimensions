@@ -55,7 +55,9 @@ Selecting a note pulls its neighbors' names out of the field, so a thread of rel
 
 ## Why it draws the way it does
 
-Dot size is by row, not by link count. Scaling every note by connectivity let one hub set the scale for the whole vault, and dense folders rendered as a solid mass.
+Dot size is a base per row plus a link-count term. Maps run about 4 to 8 px so a busy hub reads clearly bigger than a quiet one; notes stay between 1.6 and 2.6 px so the field keeps its dusting look.
+
+Maps and notes are measured against separate scales. A MOC is a hub by construction, so measuring both against one vault-wide scale pinned most maps to the same maximum and they all came out identical.
 
 Inside a cell, notes scatter by a hash of their path. It looks random, but it is stable, so a note keeps its spot between reloads.
 

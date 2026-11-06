@@ -29,17 +29,25 @@ Classification uses the entire included vault before any display filter, focus o
 
 ## Dot size
 
-**Shipped behavior.** Radius is a function of stratum, not of connectivity. The earlier connectivity-scaled radius was replaced because a single high-degree outlier set the scale for the whole vault, inflating every well-connected note until dense folders rendered as solid masses.
+**Shipped behavior.** Radius is a base value per stratum plus a degree term, so every mark varies with connectivity without connectivity setting the overall scale.
 
-| Stratum | Radius |
-| --- | --- |
-| 5. Home / hubs | 6.5 px |
-| 4. Maps of maps | 6.0 px |
-| 3. Maps of content | 5.5 px |
-| 2. Linked notes | 1.8 to 2.9 px, log-compressed by degree |
-| 1. Unlinked notes | 1.8 px |
+`radius = base + span * min(1, log1p(degree) / log1p(ref))`
 
-Note-stratum marks drop to a 0.6 px halo so the background stroke does not swallow them. Degree is still the number of distinct neighbors across incoming and outgoing links, counted once per neighbor, excluding self-links, unresolved targets and excluded files, and it still drives the slight variation inside the linked stratum and the ordering of label priority.
+| Stratum | Base | Span | Range |
+| --- | --- | --- | --- |
+| 5. Home / hubs | 4.4 px | 4.4 px | 4.4 to 8.8 px |
+| 4. Maps of maps | 4.0 px | 4.4 px | 4.0 to 8.4 px |
+| 3. Maps of content | 3.6 px | 4.4 px | 3.6 to 8.0 px |
+| 2. Linked notes | 1.6 px | 1.0 px | 1.6 to 2.6 px |
+| 1. Unlinked notes | 1.6 px | 1.0 px | 1.6 px, degree being zero |
+
+`ref` is the 90th percentile of degree **within the group**, computed separately for the map strata and the note strata. This matters more than it sounds. A map is a hub by construction, so against a single vault-wide reference most maps exceeded it and clamped to the same maximum: in a 656-note vault whose p90 degree was 11, twelve of twenty-one maps rendered at identical size and widening the span could not help, because they were all pinned at the ceiling. Split references put the map reference near 81 and the note reference near 9, and the map row fans out across its whole range.
+
+Two deliberate asymmetries. The note span is narrow, 1.0 px against the maps' 4.4, so the note field stays a near-uniform dusting and degree reads only as a faint cue. And the smallest possible map, 3.6 px, still exceeds the largest possible note, 2.6 px, so stratum remains unambiguous at a glance.
+
+Earlier revisions scaled radius purely by connectivity against the vault maximum. One 124-link outlier set the scale for everything, dense folders rendered as a solid mass, and the band where most notes live varied by under half a pixel.
+
+Note-stratum marks drop to a 0.6 px halo so the background stroke does not swallow them. Degree is the number of distinct neighbors across incoming and outgoing links, counted once per neighbor, excluding self-links, unresolved targets and excluded files. It also orders label priority. `maxDegree` comes from the complete included vault and does not change with filtering or Focus.
 
 Within a folder/date/stratum cell, positions come from a hash of the note's path, giving a uniform random scatter with natural clumping and voids. Positions are stable across rebuilds because the hash is of the path. The cell's occupied area scales with the note count, down to a floor, so small folders read as a group rather than as specks flung into the corners. Map strata skip this and use the tier layout below.
 
