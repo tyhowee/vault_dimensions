@@ -2,6 +2,8 @@
 
 An Obsidian plugin that lays the whole vault out as one picture: where a note sits in the hierarchy, which folder it lives in, and how connected it is.
 
+![Vault Dimensions showing a vault of about 650 notes, laid out by folder](docs/screenshot.png)
+
 Five rows, top to bottom:
 
 | Row | What lands there |
