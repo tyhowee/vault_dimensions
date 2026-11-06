@@ -2,7 +2,7 @@
 
 An Obsidian plugin that lays the whole vault out as one picture: where a note sits in the hierarchy, which folder it lives in, and how connected it is.
 
-![Vault Dimensions showing a vault of about 650 notes, laid out by folder](docs/screenshot.png)
+![The whole vault laid out by folder, five rows from hubs at the top to unlinked notes at the bottom](docs/screenshot-overview.png)
 
 Five rows, top to bottom:
 
@@ -39,6 +39,10 @@ Targets that aren't notes, a `.base` file for instance, are ignored. A map is dr
 - **Color** by the graph view's path groups, or by the `area/`, `topic/` or `method/` tag namespace.
 
 Map names always show. Note names appear past about 2.2x zoom, and overlapping ones drop out until there is room.
+
+![A selected note with its links fanning out to neighbors across several folders](docs/screenshot-selection.png)
+
+Selecting a note pulls its neighbors' names out of the field, so a thread of related work reads across folders without hunting for it.
 
 ## Settings
 
