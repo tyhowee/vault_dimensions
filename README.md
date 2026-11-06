@@ -1,34 +1,66 @@
-# Dimensions for Obsidian
+# Vault Dimensions
 
-An Obsidian plugin for navigating a vault through visual hierarchy, folders, dates, and connectivity. Working and installed; `main.js`, `styles.css` and `manifest.json` here are the shipped plugin.
+An Obsidian plugin that lays the whole vault out as one picture: where a note sits in the hierarchy, which folder it lives in, and how connected it is.
 
-The original design study, [the interactive mockup](mockups/index.html), still runs from disk with fictional notes and no network dependencies.
+Five rows, top to bottom:
 
-| Preset | Horizontal | Vertical |
-| --- | --- | --- |
-| Hierarchy by folder (default) | Folder | Five navigation strata |
-| Hierarchy over time | Created month | Five navigation strata |
-| Structure over time | Created month | Folder |
+| Row | What lands there |
+| --- | --- |
+| Home / hubs | Notes designated in settings |
+| Maps of maps | A map with 2 or more child maps |
+| Maps of content | `type: moc`, or anything in the maps folder |
+| Linked notes | At least one resolved link |
+| Unlinked notes | None |
 
-The five strata run from Home / hubs at the top through Maps of maps, Maps of content, Linked notes, and Unlinked notes. Choose other axis combinations to inspect incoming links, total neighbors, modification date, or note type.
+Columns are top-level folders by default, or created month if you switch the axis.
 
-Dot size reflects stratum, not connectivity: the three map strata are a regular larger size, linked and unlinked notes are small and near-uniform. Within a cell, notes scatter by a hash of their path, so positions are stable across rebuilds but carry no extra meaning.
+## Install
 
-Map titles always show, dodged apart and staggered across two lanes so names fit. Ordinary note titles appear once zoom passes about 2.2x, thinned by collision and prioritized by degree. Labels sit against their mark rather than floating off it.
+Not in the community store. Copy `main.js`, `styles.css` and `manifest.json` into `<vault>/.obsidian/plugins/vault-dimensions/`, then turn it on under Settings > Community plugins.
 
-Steps controls depth for both link lines and Focus. With Focus off it draws edges out to that many hops from the selection, fading with distance; with Focus on it also limits which notes are drawn. Scroll to zoom; Fit restores the overview.
+## How it reads the hierarchy
 
-Colour follows the graph view's path groups by default, and can instead encode the `area/`, `topic/` or `method/` tag namespace, with a legend.
+A note declares its parent one of three ways, checked in this order:
 
-The future plugin inherits the active Obsidian theme dynamically. Preview appearance follows the operating system by default, with Light/Dark overrides for inspection. The standalone file cannot read the theme of a separate Obsidian application.
+1. `parent:` in frontmatter
+2. `**Parent:** [[X]]` in the body
+3. A bare `[[X]]` alone on the first line
 
-- [Hierarchy and interaction rules](docs/hierarchy.md)
-- [Product design](docs/design.md)
-- [Implementation plan](docs/implementation-plan.md)
-- [Research](docs/research.md)
-- [Review guide](docs/review.md)
-- [Validation](docs/validation.md)
+Targets that aren't notes, a `.base` file for instance, are ignored. A map is drawn above whichever folder most of its descendants live in, so the Projects map sits over `1. Projects` rather than in a column of its own.
 
-Parentage is read from a frontmatter `parent:` property, a `**Parent:** [[X]]` line, or a bare `[[X]]` wikilink alone on the first body line, in that precedence order. A map is placed above the folder most of its descendants live in.
+## Controls
 
-The name is provisional. This is an independent design inspired by Maps of the Ideaverse, not a fork. All note titles, dates, paths, links, and excerpts in the mockup are fictional. Actual vault observations are limited to structural findings in the research document. The live vault remains outside this project's write scope.
+- Click a note to select it. Its links draw as curves: solid outgoing, dashed incoming, fading with distance.
+- **Steps** sets how many hops those links follow, 1 to 3.
+- **Focus** additionally hides everything outside that neighborhood.
+- Scroll to zoom, drag to pan, **Fit** to reset.
+- **Color** by the graph view's path groups, or by the `area/`, `topic/` or `method/` tag namespace.
+
+Map names always show. Note names appear past about 2.2x zoom, and overlapping ones drop out until there is room.
+
+## Settings
+
+| Setting | Default |
+| --- | --- |
+| Home and hub paths | `MOCs/Dashboard.md` |
+| Maps folder | `MOCs` |
+| Excluded folders | `Templates` |
+| Child maps required for maps of maps | 2 |
+
+## Why it draws the way it does
+
+Dot size is by row, not by link count. Scaling every note by connectivity let one hub set the scale for the whole vault, and dense folders rendered as a solid mass.
+
+Inside a cell, notes scatter by a hash of their path. It looks random, but it is stable, so a note keeps its spot between reloads.
+
+## Credit
+
+Inspired by [Maps of the Ideaverse](https://github.com/nickmilo/ideaverse-maps) by Nick Milo. Independent implementation, not a fork.
+
+## Docs
+
+`docs/` is left over from the design study that started this. [hierarchy.md](docs/hierarchy.md) tracks the shipped behavior; the rest describes intent. [mockups/index.html](mockups/index.html) is the original offline prototype, fictional data, no network.
+
+## License
+
+MIT, see [LICENSE](LICENSE).
