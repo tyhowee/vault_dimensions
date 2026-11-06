@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Dimensions · design prototype</title>
+<style>
+/* Preview-only fallback palette. Production consumes Obsidian variables directly. */
+:root{color-scheme:light dark;font-family:var(--font-interface,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif);font-size:var(--font-ui-small,14px)}
+body{--preview-bg:#fafaf8;--preview-panel:#fff;--preview-soft:#f1f1ee;--preview-ink:#252724;--preview-muted:#686b65;--preview-line:#dcded7;--preview-mark:#848980;--preview-focus:#536a83;color-scheme:light}
+body[data-preview-mode="dark"]{--preview-bg:#1d1f1e;--preview-panel:#242625;--preview-soft:#2d302e;--preview-ink:#e2e5df;--preview-muted:#a4aaa2;--preview-line:#40443f;--preview-mark:#a1a99e;--preview-focus:#a9bdd2;color-scheme:dark}
+@media(prefers-color-scheme:dark){body:not([data-preview-mode]){--preview-bg:#1d1f1e;--preview-panel:#242625;--preview-soft:#2d302e;--preview-ink:#e2e5df;--preview-muted:#a4aaa2;--preview-line:#40443f;--preview-mark:#a1a99e;--preview-focus:#a9bdd2;color-scheme:dark}}
+.shell{--bg:var(--background-primary,var(--preview-bg));--panel:var(--background-secondary,var(--preview-panel));--soft:var(--background-secondary-alt,var(--preview-soft));--ink:var(--text-normal,var(--preview-ink));--muted:var(--text-muted,var(--preview-muted));--line:var(--background-modifier-border,var(--preview-line));--mark:var(--text-muted,var(--preview-mark));--selected:var(--text-normal,var(--preview-ink));--on:var(--background-primary,var(--preview-bg));--focus:var(--interactive-accent,var(--preview-focus));background:var(--bg);color:var(--ink)}
+*{box-sizing:border-box}body{margin:0;background:var(--background-primary,var(--preview-bg));color:var(--text-normal,var(--preview-ink))}button,input,select{font:inherit;color:inherit}button,select{cursor:pointer}button{background:transparent;border:1px solid var(--line);border-radius:4px;padding:7px 11px}button:hover{background:var(--soft)}button:focus-visible,input:focus-visible,select:focus-visible,[role=button]:focus-visible{outline:2px solid var(--focus);outline-offset:3px}button[aria-pressed=true]{background:var(--selected);color:var(--on);border-color:var(--selected)}input,select{background:var(--panel);border:1px solid var(--line);border-radius:4px;min-height:34px;padding:6px 9px;max-width:100%}input[type=checkbox]{min-height:auto;accent-color:var(--selected)}h1,h2,h3,p{margin:0}h1{font-size:17px;font-weight:600;letter-spacing:-.3px}h2{font-size:15px;font-weight:600}h3{font-size:12px;font-weight:500;color:var(--muted);margin:24px 0 9px}a{color:inherit}.muted{color:var(--muted)}.mono,kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}.small{font-size:12px}.shell{max-width:1600px;margin:auto}.top{display:flex;gap:18px;align-items:center;padding:20px 28px;border-bottom:1px solid var(--line)}.wordmark{display:flex;align-items:center;gap:12px}.brand{font-size:21px;line-height:1;color:var(--muted);font-weight:300}.top .spacer{flex:1}.prototype-label{font-size:12px;color:var(--muted)}.top button{font-size:12px}.controls{padding:21px 28px 16px;border-bottom:1px solid var(--line);display:grid;gap:20px}.presets{display:flex;flex-wrap:wrap;gap:7px}.presets button{font-size:13px}.presets .number{opacity:.65;margin-right:7px;font-size:11px}.fields{display:flex;align-items:end;flex-wrap:wrap;gap:14px}.field{display:grid;gap:6px;min-width:130px;font-size:12px;color:var(--muted)}.field select,.field input{font-size:13px;color:var(--ink)}.search-field{margin-left:auto;min-width:200px;flex:1;max-width:310px}.fields>button{font-size:12px;min-height:34px}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 300px;min-height:660px}.main{min-width:0;padding:24px 28px}.map-header{display:flex;gap:16px;align-items:start;justify-content:space-between}.map-header p{margin-top:6px;font-size:12px;line-height:1.6;color:var(--muted)}.check{display:flex;align-items:center;gap:7px;font-size:12px;white-space:nowrap}.chart{margin-top:20px;width:100%;max-height:610px;overflow:auto}.chart svg{display:block;width:100%;overflow:visible}.chart text{font-family:inherit;font-size:11px;fill:var(--muted)}.chart .axis-title{font-size:12px;fill:var(--ink)}.chart .row-label{font-size:12px}.gridline{stroke:var(--line);stroke-width:1}.band{fill:var(--soft)}.dot{fill:var(--mark);stroke:var(--bg);stroke-width:2}.group-box{fill:var(--soft);stroke:var(--mark);stroke-width:1}.group-number{fill:var(--ink)!important;font-size:11px!important;font-weight:600}.hit{fill:transparent;stroke:none}.mark{cursor:pointer}.mark:hover .dot,.mark:focus .dot{fill:var(--selected)}.mark.selected .dot,.mark.selected .group-box{fill:var(--selected);stroke:var(--selected)}.mark.selected .group-number{fill:var(--on)!important}.ring{fill:none;stroke:var(--selected);stroke-width:1}.chart .note-label{fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--bg);stroke-width:4px;stroke-linejoin:round;pointer-events:none}.chart .selected-label{font-weight:600}.map-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:14px}.map-actions button,.map-actions select{font-size:12px}.map-actions label{display:flex;align-items:center;gap:6px;font-size:12px}.map-actions output{font-size:11px;color:var(--muted);min-width:34px}.sizing-key{display:inline-flex;align-items:center;gap:5px}.sizing-key i:nth-child(2){width:11px;height:11px}.sizing-key i:nth-child(3){width:17px;height:17px}.edge{fill:none;stroke:var(--mark);stroke-width:1.1;opacity:.65;pointer-events:none}.edge.incoming{stroke-dasharray:4 4}.edge.context{stroke-dasharray:2 3;opacity:.3}.legend{display:flex;flex-wrap:wrap;align-items:center;gap:18px;font-size:11px;color:var(--muted);margin:14px 0 25px}.legend span{display:inline-flex;align-items:center;gap:7px}.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--mark)}.legend b{font-size:10px;font-weight:500;padding:0 4px;border:1px solid var(--mark);border-radius:2px}.legend em{display:inline-block;width:20px;border-top:1px solid var(--mark)}.legend .dash{border-top-style:dashed}.list-head{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding:18px 0 11px}.list-head h2{font-size:13px}.list-head button{font-size:11px;padding:4px 8px}.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;text-align:left;font-size:12px}th{font-weight:400;color:var(--muted);font-size:11px}th,td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}th:first-child,td:first-child{padding-left:0}td:last-child,th:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.note-button{padding:0;border:none;text-align:left;border-radius:2px;color:var(--ink);font-size:12px;line-height:1.5}.note-button:hover{text-decoration:underline;background:transparent}tr.selected{background:var(--soft)}.detail{border-left:1px solid var(--line);padding:25px 22px;background:var(--panel);min-width:0}.eyebrow{font-size:11px;letter-spacing:.6px;color:var(--muted);text-transform:uppercase;margin-bottom:14px}.detail h2{font-size:18px;line-height:1.4;letter-spacing:-.2px}.path{font-size:11px;line-height:1.6;color:var(--muted);overflow-wrap:anywhere;margin-top:8px}.excerpt{font-size:13px;line-height:1.75;margin-top:22px}.values{margin:22px 0 0;font-size:12px}.values>div{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}dt{color:var(--muted)}dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}.source{font-size:11px;line-height:1.6;color:var(--muted);margin-top:9px}.connection{display:block;width:100%;border:0;border-radius:0;text-align:left;border-bottom:1px solid var(--line);padding:9px 0;font-size:12px;line-height:1.5}.connection span{display:block;color:var(--muted);font-size:10px;margin-top:2px}.empty{font-size:12px;color:var(--muted);line-height:1.7;padding:12px 0}.status{padding:12px 28px;border-top:1px solid var(--line);font-size:11px;display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;color:var(--muted)}.group-hint{font-size:12px;line-height:1.6;margin-top:12px}.selected-caption{font-size:11px;color:var(--muted);margin-top:8px}.count-pill{font-size:11px;color:var(--muted);white-space:nowrap}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:1100px){.workspace{grid-template-columns:minmax(0,1fr) 255px}.main{padding:20px}.detail{padding:22px 17px}.top,.controls{padding-left:20px;padding-right:20px}.search-field{margin-left:0}.map-header{flex-wrap:wrap}}
+@media(max-width:800px){.workspace{grid-template-columns:1fr}.detail{border-left:0;border-top:1px solid var(--line)}.top{flex-wrap:wrap;gap:10px}.prototype-label{flex:1}.top .spacer{display:none}.main{padding:18px 14px}.controls{padding:18px 14px}.fields{gap:10px}.field{flex:1;min-width:120px}.search-field{max-width:none;flex-basis:180px}.presets{gap:5px}.presets button{font-size:12px;padding:7px 9px}.top{padding:16px 14px}.chart .row-label{font-size:11px}.chart text{font-size:10px}.status{padding:12px 14px}.optional-column{display:none}}
+@media(pointer:coarse){button,.connection,.note-button,select{min-height:44px}input{min-height:44px;font-size:16px!important}.check{min-height:44px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="top">
+    <div class="wordmark"><span class="brand" aria-hidden="true">⊞</span><h1>Dimensions</h1></div>
+    <span class="prototype-label">Obsidian plugin / design prototype</span><span class="spacer"></span>
+    <span class="prototype-label">Fictional vault</span><label class="prototype-label">Preview appearance <select id="theme" aria-label="Preview appearance"><option value="system">Follow system</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+  </header>
+  <section class="controls" aria-label="Map controls">
+    <div class="presets" aria-label="Map presets">
+      <button type="button" data-preset="hierarchy-time" aria-pressed="true"><span class="number">01</span>Hierarchy over time</button>
+      <button type="button" data-preset="hierarchy-folder" aria-pressed="false"><span class="number">02</span>Hierarchy by folder</button>
+      <button type="button" data-preset="time" aria-pressed="false"><span class="number">03</span>Structure over time</button>
+    </div>
+    <div class="fields">
+      <label class="field">Horizontal<select id="axis-x"><option value="created">Created month</option><option value="modified">Modified month</option><option value="total">Total neighbors</option><option value="folder">Folder</option></select></label>
+      <label class="field">Vertical<select id="axis-y"><option value="stratum">Hierarchy</option><option value="folder">Folder</option><option value="type">Type</option><option value="incoming">Incoming links</option></select></label>
+      <label class="field">Folder<select id="folder"><option value="all">All folders</option></select></label>
+      <label class="field search-field">Find in this view<input id="search" type="search" placeholder="Title, alias, or path…" autocomplete="off"></label>
+      <button id="reset" type="button">Reset</button>
+    </div>
+  </section>
+  <div class="workspace">
+    <main class="main">
+      <div class="map-header"><div><h2 id="view-title">Structure over time</h2><p id="view-description">Folders give each note a row. Creation dates give it a place in time.</p></div><label class="check"><input id="show-links" type="checkbox" checked>Selected links</label></div>
+      <div class="map-actions" aria-label="Focus and zoom">
+        <label><input id="focus" type="checkbox">Focus</label>
+        <label>Steps<select id="steps"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label>
+        <button id="zoom-out" type="button" aria-label="Zoom out">−</button><output id="zoom-level">100%</output><button id="zoom-in" type="button" aria-label="Zoom in">+</button><button id="zoom-reset" type="button">Fit</button>
+        <span id="focus-summary" class="small muted"></span>
+      </div>
+      <div id="chart" class="chart"></div>
+      <div class="legend"><span class="sizing-key"><i></i><i></i><i></i>Size = total neighbors</span><span><b>2</b>Grouped notes</span><span><em></em>Links to</span><span><em class="dash"></em>Linked from</span><span id="path-legend" hidden><em style="border-top-style:dotted"></em>Focus paths</span></div>
+      <div class="list-head"><h2 id="list-title">Notes in view</h2><span class="count-pill" id="list-count"></span><button id="clear-group" type="button" hidden>Show all results</button></div>
+      <div class="table-wrap"><table aria-label="Notes in map"><thead><tr><th scope="col">Note</th><th scope="col" class="optional-column">Folder</th><th scope="col">Created</th><th scope="col">Neighbors</th></tr></thead><tbody id="note-rows"></tbody></table></div>
+      <p id="empty" class="empty" hidden>No notes match these filters. Clear the search or choose another folder.</p>
+    </main>
+    <aside class="detail" id="detail" aria-label="Selection details"></aside>
+  </div>
+  <footer class="status"><span id="status" aria-live="polite"></span><span id="scope-caption">Vault link counts and strata · No vault connection</span></footer>
+</div>
+<script>
+(() => {
+  'use strict';
+  // Invented fixtures. No filesystem, network, Obsidian, or persistent storage access.
+  const rows = [
+    ['Terrain comparison','1. Projects','project','Compare terrain summaries from two elevation sources.','DEM'],
+    ['Field notebook parser','1. Projects','project','Extract dated observations from field notebook exports.','notebook importer'],
+    ['Image catalog','1. Projects','project','A local catalog for imagery and processing notes.','imagery index'],
+    ['Sensor calibration','1. Projects','project','Track calibration assumptions across field instruments.',''],
+    ['Slope response','2. Research','research','Compare slope response under different transport assumptions.','hillslope'],
+    ['Seasonal snow boundary','2. Research','research','Investigate changes in the visible snow boundary.','snowline'],
+    ['Sampling bias','2. Research','research','Record the effects of uneven spatial sampling.',''],
+    ['River network scale','2. Research','research','Compare drainage structure across resolution levels.',''],
+    ['Spatial statistics course','3. Education','education','Course outline and methods to revisit.',''],
+    ['Field methods workshop','3. Education','education','Workshop exercises and reference notes.',''],
+    ['Model diagnostics lecture','3. Education','education','Notes on assumptions, residuals, and model checks.',''],
+    ['Cartography seminar','3. Education','education','Exercises in visual encoding and map interpretation.',''],
+    ['Raster alignment checklist','4. Notes','note','Check extent, resolution, projection, and cell alignment.','grid alignment'],
+    ['Coordinate systems','4. Notes','note','Keep coordinate assumptions visible when combining sources.','CRS'],
+    ['Experiment naming','4. Notes','note','A naming convention for comparable experiment runs.',''],
+    ['Uncertainty vocabulary','4. Notes','note','Distinguish measurement, parameter, and structural uncertainty.',''],
+    ['Elevation data guide','5. Resources','resource','A reference guide for evaluating elevation datasets.','DEM handbook'],
+    ['Remote sensing handbook','5. Resources','resource','A reference for interpreting imagery and sensor properties.',''],
+    ['Sampling design paper','5. Resources','resource','A paper discussing sampling geometry and inference.',''],
+    ['Visual explanation book','5. Resources','resource','Examples of using position to clarify relationships.',''],
+    ['2026-02-12','6. Daily','daily','Recorded work on terrain comparisons and data alignment.',''],
+    ['2026-04-07','6. Daily','daily','Reviewed sampling assumptions and reference material.',''],
+    ['2026-07-19','6. Daily','daily','Prepared notes for the field methods workshop.',''],
+    ['2026-10-21','6. Daily','daily','Compared model diagnostics and revised an experiment.',''],
+    ['Alex Rowan','7. People','person','Fictional contact for field methods discussions.',''],
+    ['Morgan Hale','7. People','person','Fictional contact for spatial statistics discussions.',''],
+    ['Sam Ellis','7. People','person','Fictional contact for imagery interpretation discussions.',''],
+    ['Casey Rivers','7. People','person','Fictional contact for research planning.',''],
+    ['20260218 - Terrain review','8. Meeting Notes','meeting','Discussed dataset resolution and comparison assumptions.',''],
+    ['20260415 - Sampling discussion','8. Meeting Notes','meeting','Compared alternative sampling designs.',''],
+    ['20260811 - Field planning','8. Meeting Notes','meeting','Reviewed field observations and measurement priorities.',''],
+    ['20261024 - Research review','8. Meeting Notes','meeting','Discussed recent model comparisons and reference notes.',''],
+    ['Methods index','MOCs','moc','A fictional index of methods and their supporting notes.',''],
+    ['Research index','MOCs','moc','A fictional map of active and completed research.',''],
+    ['Reading index','MOCs','moc','A fictional collection of reference material.',''],
+    ['Undated field reference','5. Resources','resource','An imported reference without a reliable creation date.',''],
+    ['Navigation overview','MOCs','moc','A fictional map gathering the methods, research, and reading maps.',''],
+    ['Home','MOCs','moc','A fictional home note, explicitly designated as the navigation root.',''],
+    ['Project hub','MOCs','moc','A fictional project entry point, explicitly designated as a hub.','']
+  ];
+  const notes = rows.map((r,i) => {
+    const m = (i * 5 + Math.floor(i / 4)) % 12;
+    const d = new Date(Date.UTC(2025, 10 + m, 4 + i % 23));
+    let created = d.toISOString().slice(0,10), source = 'created property';
+    if (r[2] === 'daily') {created=r[0];source='date in filename';}
+    if (r[2] === 'meeting') {created=r[0].slice(0,4)+'-'+r[0].slice(4,6)+'-'+r[0].slice(6,8);source='date in filename';}
+    if(i===35){created=null;source='No reliable creation date';}
+    const candidateModified='2026-10-'+String(5+i%23).padStart(2,'0');
+    const modified=created&&created>candidateModified?created:candidateModified;
+    return {id:'n'+i,title:r[0],folder:r[1],type:r[2],excerpt:r[3],alias:r[4],path:r[1]+'/'+r[0]+'.md',created,source,modified,out:[],incoming:[]};
+  });
+  // Several notes share a month and folder, making aggregate behavior reviewable.
+  notes[0].created='2026-02-10'; notes[1].created='2026-02-18';notes[2].created='2026-07-14';notes[3].created='2026-07-21';
+  const byId=new Map(notes.map(n=>[n.id,n]));
+  notes.forEach((n,i)=>{
+    if(i%7!==0 && i!==35){n.out.push('n'+((i+5)%35));if(i%3===0)n.out.push('n0');if(i%4===0)n.out.push('n32');}
+    n.out=[...new Set(n.out)].filter(id=>id!==n.id);
+  });
+  notes[0].out=['n12','n16','n4'];notes[32].out=['n12','n13','n14','n15'];notes[33].out=['n4','n5','n6','n7'];notes[34].out=['n16','n17','n18','n19'];
+  notes[36].out=['n32','n33','n34'];notes[37].out=['n36','n38'];notes[38].out=['n0','n1','n2','n3'];
+  notes.forEach(n=>n.out.forEach(id=>byId.get(id).incoming.push(n.id)));
+  notes.forEach(n=>{n.total=new Set([...n.out,...n.incoming]).size;});
+  const strata=['Home / hubs','Maps of maps','Maps of content','Linked notes','Unlinked notes'];
+  const designatedHubs=new Set(['n37','n38']);
+  const declaredChildren=new Map([['n36',['n32','n33','n34']],['n37',['n36','n38']]]);
+  const mapNotes=new Set(notes.filter(n=>n.type==='moc'||n.folder==='MOCs').map(n=>n.id));
+  notes.forEach(n=>{
+    const childMaps=(declaredChildren.get(n.id)||[]).filter(id=>mapNotes.has(id)&&!designatedHubs.has(id));
+    if(designatedHubs.has(n.id)){n.stratum='Home / hubs';n.reason='Explicit home/hub designation in plugin settings.';}
+    else if(mapNotes.has(n.id)&&childMaps.length>=2){n.stratum='Maps of maps';n.reason=childMaps.length+' declared child maps: '+childMaps.map(id=>byId.get(id).title).join(', ')+'.';}
+    else if(mapNotes.has(n.id)){n.stratum='Maps of content';n.reason='Recognized navigation note: type moc / MOCs folder.';}
+    else if(n.total>0){n.stratum='Linked notes';n.reason=n.total+' distinct resolved note neighbors; no navigation role.';}
+    else{n.stratum='Unlinked notes';n.reason='No resolved incoming or outgoing note links; no navigation role.';}
+  });
+  function walkNeighborhood(seed,steps){
+    const seen=new Set(seed?[seed]:[]),parents=new Map(),depths=new Map(seed?[[seed,0]]:[]);let frontier=[...seen];
+    for(let hop=0;hop<steps;hop++){const next=[];frontier.forEach(id=>{const n=byId.get(id);[...n.out,...n.incoming].forEach(q=>{if(!seen.has(q)){seen.add(q);parents.set(q,id);depths.set(q,hop+1);next.push(q);}});});frontier=next;}
+    return {seen,parents,depths};
+  }
+  function neighborhood(seed,steps){return walkNeighborhood(seed,steps).seen;}
+  const maxDegree=Math.max(1,...notes.map(n=>n.total));
+  const radius=n=>3+8*Math.sqrt(n.total/maxDegree);
+  const $=id=>document.getElementById(id);
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const folders=[...new Set(notes.map(n=>n.folder))];
+  $('folder').innerHTML+=[...folders].map(f=>`<option value="${esc(f)}">${esc(f)}</option>`).join('');
+  const months=Array.from({length:12},(_,i)=>new Date(Date.UTC(2025,10+i,1)).toISOString().slice(0,7));
+  const dateLabel=k=>k==='unknown'?'Unknown':new Date(k+'-01T12:00:00Z').toLocaleDateString('en-US',{month:'short',year:'2-digit',timeZone:'UTC'});
+  const state={x:'created',y:'stratum',folder:'all',query:'',selected:'n36',group:null,links:true,focus:false,steps:1,zoom:1};
+  let visible=[],groups=[],positions=new Map();
+  const presetNames={'hierarchy-time':['Hierarchy over time','Navigation roles form five strata. Creation dates organize notes within each layer.'],'hierarchy-folder':['Hierarchy by folder','The same five strata, arranged in folder columns. Select a note to trace its neighborhood.'],time:['Structure over time','Folders give each note a row. Creation dates give it a place in time.'],incoming:['Connections over time','See incoming links against creation date. Counts describe structure, not quality.'],degree:['Connections by folder','Compare the number of distinct neighbors within each folder.']};
+  function presetKey(){if(state.y==='stratum'&&state.x==='created')return 'hierarchy-time';if(state.y==='stratum'&&state.x==='folder')return 'hierarchy-folder';return state.x==='created'&&state.y==='folder'?'time':state.x==='created'&&state.y==='incoming'?'incoming':state.x==='total'&&state.y==='folder'?'degree':null;}
+  function visibleNotes(){const q=state.query.toLowerCase().trim(),near=state.focus?neighborhood(state.selected,state.steps):null;return notes.filter(n=>(!near||near.has(n.id))&&(state.folder==='all'||state.folder===n.folder)&&(!q||[n.title,n.alias,n.path].join(' ').toLowerCase().includes(q)));}
+  function select(id){state.selected=id;render();}
+  function render(){
+    visible=visibleNotes();const key=presetKey();
+    document.querySelectorAll('[data-preset]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.preset===key)));
+    $('view-title').textContent=key?presetNames[key][0]:`${$('axis-y').selectedOptions[0].text} by ${$('axis-x').selectedOptions[0].text.toLowerCase()}`;
+    $('view-description').textContent=key?presetNames[key][1]:'Each position follows the axes below. Select a mark to inspect its exact values.';
+    renderMap(); renderList();renderDetail();
+    $('path-legend').hidden=!state.focus||state.steps===1||!state.links;
+    $('focus').disabled=!state.selected;$('focus').checked=state.focus;$('steps').disabled=!state.focus;
+    const near=state.focus?neighborhood(state.selected,state.steps):null;
+    $('focus-summary').textContent=near?`${visible.length} of ${near.size} neighborhood notes shown · ${state.steps} ${state.steps===1?'step':'steps'}`:'Titles: selected note + direct neighbors';
+    $('zoom-level').textContent=Math.round(state.zoom*100)+'%';$('zoom-out').disabled=state.zoom<=1;$('zoom-in').disabled=state.zoom>=3;
+    $('scope-caption').textContent='Vault link counts and strata · '+(['created','modified'].includes(state.x)?'Date bins: month · ':'')+'No vault connection';
+    $('status').textContent=`${visible.length} of ${notes.length} fictional notes · ${groups.length} visible marks${state.selected?' · Selected: '+byId.get(state.selected).title:''}`;
+  }
+  function renderMap(){
+    const available=Math.max(270,Math.floor($('chart').getBoundingClientRect().width)),narrow=available<480;
+    const hierarchy=state.y==='stratum',categorical=state.y!=='incoming';
+    const l=hierarchy?(narrow?132:160):(narrow?88:118),r=30,t=32;
+    const dates=['created','modified'].includes(state.x),folderX=state.x==='folder';
+    const baseWidth=folderX?Math.max(available,780):available;
+    const plotW=(baseWidth-l-r)*state.zoom,w=l+plotW+r;
+    // Domains and packing use the whole fixture, keeping focus/filter positions stable.
+    const cats=hierarchy?strata:state.y==='folder'?folders:[...new Set(notes.map(n=>n.type))].sort();
+    const maxIncoming=Math.max(1,...notes.map(n=>n.incoming.length));
+    const rowH=(hierarchy?76:43)*state.zoom,plotH=categorical?Math.max(2,cats.length)*rowH:310*state.zoom;
+    const bottom=folderX?105:narrow?80:66,h=t+plotH+bottom;
+    const maxTotal=Math.max(1,...notes.map(n=>n.total));
+    const xKeys=dates?[...months,...(notes.some(n=>!n[state.x])?['unknown']:[])]:folderX?folders:Array.from({length:maxTotal+1},(_,i)=>String(i));
+    const step=plotW/Math.max(1,xKeys.length);
+    const xFor=k=>l+(xKeys.indexOf(k)+.5)*step;
+    const yFor=k=>categorical?t+(cats.indexOf(k)+.5)*rowH:t+plotH-Number(k)/maxIncoming*plotH;
+    const buckets=new Map(),visibleIds=new Set(visible.map(n=>n.id));
+    notes.forEach(n=>{
+      const x=dates?(n[state.x]?.slice(0,7)||'unknown'):folderX?n.folder:String(n.total);
+      const y=categorical?n[state.y]:String(n.incoming.length),key=x+'|'+y;
+      if(!buckets.has(key))buckets.set(key,{key,x,y,notes:[]});buckets.get(key).notes.push(n);
+    });
+    groups=[];positions=new Map();
+    buckets.forEach(b=>{
+      // Subpositions inside a labeled cell separate marks; they encode no extra measure.
+      const canPack=categorical&&(dates||folderX);
+      const cols=canPack?Math.max(1,Math.floor((step-8)/28)):1;
+      const rows=canPack?Math.max(1,Math.floor((rowH-12)/28)):1;
+      const capacity=cols*rows,count=Math.min(capacity,b.notes.length);
+      const ordered=[...b.notes].sort((a,b)=>a.path.localeCompare(b.path));
+      for(let slot=0;slot<count;slot++){
+        const members=ordered.filter((_,i)=>Math.floor(i*count/ordered.length)===slot).filter(n=>visibleIds.has(n.id));
+        if(!members.length)continue;
+        const usedCols=Math.min(cols,count),usedRows=Math.ceil(count/usedCols);
+        const cx=xFor(b.x)+(slot%usedCols-(usedCols-1)/2)*28;
+        const cy=yFor(b.y)+(Math.floor(slot/usedCols)-(usedRows-1)/2)*28;
+        const g={key:b.key+'|'+slot,x:b.x,y:b.y,notes:members,cx,cy};
+        groups.push(g);members.forEach(n=>positions.set(n.id,g));
+      }
+    });
+    if(state.group&&!groups.some(g=>g.key===state.group))state.group=null;
+    const xLabel=k=>dates?dateLabel(k):folderX?k.replace(/^\d\. /,'').replace('Meeting Notes','Meetings'):k+' neighbors';
+    let svg=`<svg viewBox="0 0 ${w} ${h}" style="width:${w}px;max-width:none" height="${h}" role="group" aria-label="${esc($('view-title').textContent)}. ${visible.length} notes in ${groups.length} marks. Use the note list for equivalent navigation."><text class="axis-title" x="0" y="14">${hierarchy?'Navigation role':state.y==='incoming'?'Incoming links':state.y==='folder'?'Folder':'Type'}</text>`;
+    if(categorical){cats.forEach((cat,i)=>{
+      const cy=yFor(cat),label=hierarchy?(5-i)+' · '+cat:cat.replace(/^\d\. /,'').replace('Meeting Notes','Meetings');
+      svg+=`<rect class="band" x="${l}" y="${cy-rowH/2}" width="${plotW}" height="${rowH}" opacity="${i%2?'.5':'.15'}"/><line class="gridline" x1="${l}" x2="${w-r}" y1="${cy+rowH/2}" y2="${cy+rowH/2}"/><text class="row-label" text-anchor="end" x="${l-12}" y="${cy+4}">${esc(label)}</text>`;
+    });}else{for(let i=0;i<=maxIncoming;i++){const y=yFor(String(i));svg+=`<line class="gridline" x1="${l}" x2="${w-r}" y1="${y}" y2="${y}"/><text text-anchor="end" x="${l-12}" y="${y+4}">${i}</text>`;}}
+    xKeys.forEach((k,i)=>{
+      const x=xFor(k);svg+=`<line class="gridline" x1="${x}" x2="${x}" y1="${t}" y2="${t+plotH}" opacity=".5"/>`;
+      const interval=folderX?1:Math.max(1,Math.ceil(48/step));
+      if(i%interval===0||k==='unknown'){
+        const label=dates?dateLabel(k):folderX?xLabel(k):k;
+        const rotation=folderX?-48:narrow?-40:0;
+        svg+=`<text text-anchor="${folderX?'end':'middle'}" x="${x}" y="${t+plotH+22}"${rotation?` transform="rotate(${rotation} ${x} ${t+plotH+22})"`:''}>${esc(label)}</text>`;
+      }
+    });
+    svg+=`<text class="axis-title" text-anchor="middle" x="${l+plotW/2}" y="${h-3}">${dates?(state.x==='created'?'Created':'Modified')+' (month)':folderX?'Folder':'Total neighbors (distinct notes)'}</text>`;
+    const sel=byId.get(state.selected),p=positions.get(state.selected);
+    if(state.links&&sel&&p){[['incoming',sel.incoming],['outgoing',sel.out]].forEach(([dir,ids])=>{
+      const seen=new Set();ids.forEach(id=>{const q=positions.get(id);if(!q||q.key===p.key||seen.has(q.key))return;seen.add(q.key);svg+=`<path class="edge ${dir}" d="M${p.cx},${p.cy} L${q.cx},${q.cy}"/>`;});
+    });}
+    if(state.focus&&state.links&&sel){const walk=walkNeighborhood(sel.id,state.steps);walk.parents.forEach((parent,child)=>{if(walk.depths.get(child)<2)return;const a=positions.get(parent),b=positions.get(child);if(a&&b&&a.key!==b.key)svg+=`<path class="edge context" d="M${a.cx},${a.cy} L${b.cx},${b.cy}"/>`;});}
+    const obstacles=[];
+    groups.forEach((g,i)=>{
+      const selected=g.notes.some(n=>n.id===state.selected)||g.key===state.group,multi=g.notes.length>1;
+      const rad=multi?11:radius(g.notes[0]);
+      const label=`${multi?g.notes.length+' notes':g.notes[0].title}; ${xLabel(g.x)}; ${g.y}${multi?'':'; '+g.notes[0].total+' total neighbors'}`;
+      obstacles.push({x:g.cx-rad-2,y:g.cy-rad-2,w:rad*2+4,h:rad*2+4,key:g.key});
+      svg+=`<g class="mark${selected?' selected':''}" data-group="${i}" role="button" tabindex="0" aria-label="${esc(label)}" aria-pressed="${selected}"><title>${esc(label)}</title><circle class="hit" cx="${g.cx}" cy="${g.cy}" r="15"/>`;
+      if(multi)svg+=`<rect class="group-box" x="${g.cx-11}" y="${g.cy-10}" width="22" height="20" rx="3"/><text class="group-number" text-anchor="middle" x="${g.cx}" y="${g.cy+4}">${g.notes.length}</text>`;
+      else svg+=`<circle class="dot" cx="${g.cx}" cy="${g.cy}" r="${rad}"/>`;
+      if(selected)svg+=`<circle class="ring" cx="${g.cx}" cy="${g.cy}" r="${rad+5}"/>`;svg+='</g>';
+    });
+    // Measure actual text and cull overlapping neighbor labels, selected title first.
+    const placed=[],overlaps=(a,b)=>a.x<b.x+b.w+4&&a.x+a.w+4>b.x&&a.y<b.y+b.h+4&&a.y+a.h+4>b.y;
+    const measure=document.createElement('canvas').getContext('2d');
+    const family=getComputedStyle($('chart')).fontFamily;
+    const neighbors=sel?[...new Set([...sel.out,...sel.incoming])].map(id=>byId.get(id)).sort((a,b)=>b.total-a.total||a.path.localeCompare(b.path)):[];
+    const labels=sel?[sel,...neighbors]:[];
+    labels.forEach(n=>{
+      const g=positions.get(n.id),selected=n.id===state.selected;
+      if(!g||(!selected&&g.notes.length>1))return;
+      measure.font=`${selected?'600':'400'} 11px ${family}`;
+      let label=n.title,maxWidth=Math.max(70,plotW-18);
+      if(measure.measureText(label).width>maxWidth){while(label.length&&measure.measureText(label+'…').width>maxWidth)label=label.slice(0,-1);label+='…';}
+      const width=measure.measureText(label).width+4,height=16,rad=g.notes.length>1?12:radius(n);
+      const candidates=[
+        {x:g.cx+rad+7,y:g.cy-8},{x:g.cx-rad-7-width,y:g.cy-8},
+        {x:g.cx-width/2,y:g.cy-rad-23},{x:g.cx-width/2,y:g.cy+rad+8},
+        {x:g.cx+rad+7,y:g.cy-rad-23},{x:g.cx-rad-7-width,y:g.cy+rad+8}
+      ].map(v=>({...v,w:width,h:height}));
+      let box=candidates.find(b=>b.x>=l+2&&b.x+b.w<=w-r&&b.y>=t&&b.y+b.h<=t+plotH&&!placed.some(q=>overlaps(b,q))&&!obstacles.some(q=>q.key!==g.key&&overlaps(b,q)));
+      if(!box&&selected)box={x:Math.max(l+2,Math.min(w-r-width,g.cx+rad+7)),y:Math.max(t,Math.min(t+plotH-height,g.cy-8)),w:width,h:height};
+      if(!box)return;placed.push(box);
+      svg+=`<text class="note-label${selected?' selected-label':''}" data-label-note="${n.id}" x="${box.x}" y="${box.y+12}">${esc(label)}</text>`;
+    });
+    if(!visible.length)svg+=`<text text-anchor="middle" x="${l+plotW/2}" y="${t+plotH/2}">No matching notes</text>`;
+    $('chart').innerHTML=svg+'</svg>';
+  }
+  function renderList(){
+    const group=groups.find(g=>g.key===state.group);const list=group?group.notes:visible;
+    $('list-title').textContent=group?`${state.x==='total'?group.x+' neighbors':state.x==='folder'?group.x:dateLabel(group.x)} / ${group.y}`:'Notes in view';
+    $('list-count').textContent=list.length+' notes';$('clear-group').hidden=!group;
+    $('note-rows').innerHTML=[...list].sort((a,b)=>a.folder.localeCompare(b.folder)||a.title.localeCompare(b.title)).map(n=>`<tr class="${state.selected===n.id?'selected':''}"><td><button class="note-button" type="button" data-note="${n.id}" aria-pressed="${state.selected===n.id}">${esc(n.title)}</button></td><td class="optional-column muted">${esc(n.folder.replace(/^\d\. /,''))}</td><td class="mono">${n.created||'Unknown'}</td><td class="mono">${n.total}</td></tr>`).join('');
+    $('empty').hidden=list.length>0;
+  }
+  function renderDetail(){
+    const n=byId.get(state.selected),group=groups.find(g=>g.key===state.group);
+    if(!n){$('detail').innerHTML=`<p class="eyebrow">${group?'Selected group':'Inspector'}</p><h2>${group?group.notes.length+' notes':'Select a note'}</h2><p class="group-hint">${group?'These notes share the same displayed coordinates. Choose a title in the list to inspect one.':'Select a circle or a note title to see exact values and direct connections.'}</p>`;return;}
+    const inView=visible.some(x=>x.id===n.id);
+    const connections=ids=>ids.length?ids.map(id=>{const q=byId.get(id),outside=!visible.some(v=>v.id===id);return `<button class="connection" type="button" data-note="${id}">${esc(q.title)}<span>${outside?'Outside current view · ':''}${esc(q.folder)}</span></button>`;}).join(''):'<p class="empty">None</p>';
+    $('detail').innerHTML=`<p class="eyebrow">Selected note${inView?'':' / outside view'}</p><h2>${esc(n.title)}</h2><p class="path">${esc(n.path)}</p>${!inView?'<p class="group-hint">This note is outside your current filters.</p><button type="button" id="reveal">Reveal in map</button>':''}<p class="excerpt">${esc(n.excerpt)}</p><dl class="values"><div><dt>Stratum</dt><dd>${n.stratum}</dd></div><div><dt>Created</dt><dd>${n.created||'Unknown'}</dd></div><div><dt>Modified</dt><dd>${n.modified}</dd></div><div><dt>Type</dt><dd>${n.type}</dd></div><div><dt>Incoming</dt><dd>${n.incoming.length}</dd></div><div><dt>Outgoing</dt><dd>${n.out.length}</dd></div><div><dt>Total neighbors</dt><dd>${n.total}</dd></div></dl><p class="source"><strong>Why this stratum:</strong> ${esc(n.reason)}</p><p class="source">Created source: ${esc(n.source)}.<br>Counts include the entire fictional vault.${n.alias?'<br>Alias: '+esc(n.alias):''}</p><h3>Linked from · ${n.incoming.length}</h3>${connections(n.incoming)}<h3>Links to · ${n.out.length}</h3>${connections(n.out)}<p class="source" style="margin-top:22px">In Obsidian, an Open note action would open the source beside this view.</p>`;
+  }
+  document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{const key=b.dataset.preset;state.x=key==='hierarchy-folder'?'folder':key==='degree'?'total':'created';state.y=key.startsWith('hierarchy-')?'stratum':key==='incoming'?'incoming':'folder';state.group=null;$('axis-x').value=state.x;$('axis-y').value=state.y;render();}));
+  ['axis-x','axis-y','folder'].forEach(id=>$(id).addEventListener('change',()=>{state[id==='axis-x'?'x':id==='axis-y'?'y':'folder']=$(id).value;state.group=null;render();}));
+  $('search').addEventListener('input',()=>{state.query=$('search').value;state.group=null;render();});
+  $('show-links').addEventListener('change',()=>{state.links=$('show-links').checked;render();});
+  $('clear-group').addEventListener('click',()=>{state.group=null;render();});
+  $('theme').addEventListener('change',()=>{if($('theme').value==='system')document.body.removeAttribute('data-preview-mode');else document.body.setAttribute('data-preview-mode',$('theme').value);renderMap();});
+  $('focus').addEventListener('change',()=>{state.focus=$('focus').checked&&!!state.selected;state.group=null;render();});
+  $('steps').addEventListener('change',()=>{state.steps=Number($('steps').value);state.group=null;render();});
+  function zoomTo(value){state.zoom=value;state.group=null;render();const p=positions.get(state.selected);if(p){$('chart').scrollLeft=Math.max(0,p.cx-$('chart').clientWidth/2);$('chart').scrollTop=Math.max(0,p.cy-$('chart').clientHeight/2);}}
+  $('zoom-in').addEventListener('click',()=>zoomTo(Math.min(3,state.zoom+.5)));
+  $('zoom-out').addEventListener('click',()=>zoomTo(Math.max(1,state.zoom-.5)));
+  $('zoom-reset').addEventListener('click',()=>zoomTo(1));
+  function reset(){state.x='created';state.y='stratum';state.folder='all';state.query='';state.group=null;state.selected='n36';state.links=true;state.focus=false;state.steps=1;state.zoom=1;$('steps').value='1';$('axis-x').value='created';$('axis-y').value='stratum';$('folder').value='all';$('search').value='';$('show-links').checked=true;render();}
+  $('reset').addEventListener('click',reset);
+  function activateMark(target){const el=target.closest('[data-group]');if(!el)return;const g=groups[Number(el.dataset.group)];state.group=g.notes.length>1?g.key:null;state.selected=g.notes.length===1?g.notes[0].id:state.focus?state.selected:null;render();}
+  $('chart').addEventListener('click',e=>activateMark(e.target));
+  $('chart').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){const el=e.target.closest('[data-group]');if(!el)return;e.preventDefault();const index=el.dataset.group;activateMark(e.target);$('chart').querySelector(`[data-group="${index}"]`)?.focus();}});
+  document.addEventListener('click',e=>{const b=e.target.closest('[data-note]');if(b){state.group=null;select(b.dataset.note);}if(e.target.id==='reveal'){state.folder='all';state.query='';state.group=null;$('folder').value='all';$('search').value='';render();}});
+  let lastWidth=0;new ResizeObserver(()=>{const width=Math.round($('chart').getBoundingClientRect().width);if(width!==lastWidth){lastWidth=width;renderMap();}}).observe($('chart'));
+  render();
+})();
+</script>
+</body>
+</html>
